@@ -36,9 +36,9 @@ import coil.compose.rememberAsyncImagePainter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(navController: NavHostController) {
-    var name by remember { mutableStateOf("Utilisateur") }
-    var email by remember { mutableStateOf("user@example.com") }
-    var phone by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("youssef") }
+    var email by remember { mutableStateOf("youssef@s2m.com") }
+    var phone by remember { mutableStateOf("0619165027") }
     var bio by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var isEditing by remember { mutableStateOf(false) }

@@ -12,6 +12,7 @@ import com.example.projet.screens.Page2Screen
 import com.example.projet.screens.Page3Screen
 
 import com.example.projet.screens.AboutScreen
+import com.example.projet.screens.ForgotPasswordScreen
 import com.example.projet.screens.ProfileScreen
 
 
@@ -38,6 +39,10 @@ fun AppNavigation() {
         }
         composable("page3") {
             Page3Screen(navController)
+        }
+
+        composable("forgotPassword") {
+           ForgotPasswordScreen(navController)
         }
 
 

@@ -109,13 +109,15 @@ fun LoginScreen(navController: NavHostController) {
                 )
 
 
-                TextButton(onClick = { /* Forgot logic */ }) {
-                    Text("Forgot password?", color = Color.White)
+                TextButton(
+                    onClick = { navController.navigate("forgotPassword") }
+                ) {
+                    Text("Mot de passe oublié ?", color = Color.White)
                 }
 
                 Button(
                     onClick = {
-                        if (username == "admin" && password == "admin") {
+                        if (username == "youssef" && password == "admin") {
                             Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
                             navController.navigate("dashboard")
                         } else {

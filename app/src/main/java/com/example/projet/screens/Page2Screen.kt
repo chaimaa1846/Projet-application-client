@@ -12,43 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.projet.data.remote.dto.Article
-import com.example.projet.data.remote.network.ApiClient
-import com.example.projet.data.repository.ArticleRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.projet.data.remote.dto.articleList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Page2Screen(navController: NavHostController) {
-    val scope = rememberCoroutineScope()
-    val repository = remember { ArticleRepository(ApiClient.apiService) }
-
-    var articles by remember { mutableStateOf<List<Article>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(true) {
-        scope.launch {
-            try {
-                val response = repository.getArticles()
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        articles = response.body() ?: emptyList()
-                    } else {
-                        errorMessage = "Erreur serveur"
-                    }
-                    isLoading = false
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    errorMessage = "Erreur réseau : ${e.message}"
-                    isLoading = false
-                }
-            }
-        }
-    }
+    val articles = articleList
 
     Scaffold(
         topBar = {
@@ -66,44 +35,25 @@ fun Page2Screen(navController: NavHostController) {
             )
         }
     ) { padding ->
-        Box(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .padding(16.dp)
         ) {
-            when {
-                isLoading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-                errorMessage != null -> {
-                    Text(
-                        text = errorMessage ?: "",
-                        color = Color.Red,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        items(articles) { article ->
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp),
-                                colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text("Nom : ${article.nom}", style = MaterialTheme.typography.titleMedium)
-                                    Text("Description : ${article.description}")
-                                    Text("Prix : ${article.prix} MAD")
-                                    Text("Catégorie : ${article.categorie}")
-                                    Text("Disponible : ${if (article.disponible) "Oui" else "Non"}")
-                                }
-                            }
-                        }
+            items(articles) { article ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Nom : ${article.nom}", style = MaterialTheme.typography.titleMedium)
+                        Text("Désignation : ${article.designation}")
+                        Text("Quantité : ${article.quantite}")
+                        Text("État : ${article.etat}")
+                        Text("Date d’entrée : ${article.dateEntree}")
                     }
                 }
             }

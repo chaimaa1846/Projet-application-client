@@ -12,43 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.projet.data.remote.dto.Facture
-import com.example.projet.data.remote.network.ApiClient
-import com.example.projet.data.repository.FactureRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.projet.data.remote.dto.factureList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Page3Screen(navController: NavHostController) {
-    val scope = rememberCoroutineScope()
-    val repository = remember { FactureRepository(ApiClient.apiService) }
-
-    var factures by remember { mutableStateOf<List<Facture>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(true) {
-        scope.launch {
-            try {
-                val response = repository.getFactures()
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        factures = response.body() ?: emptyList()
-                    } else {
-                        errorMessage = "Erreur serveur"
-                    }
-                    isLoading = false
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    errorMessage = "Erreur réseau : ${e.message}"
-                    isLoading = false
-                }
-            }
-        }
-    }
+    val factures = factureList
 
     Scaffold(
         topBar = {
@@ -66,44 +35,30 @@ fun Page3Screen(navController: NavHostController) {
             )
         }
     ) { padding ->
-        Box(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .padding(16.dp)
         ) {
-            when {
-                isLoading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-                errorMessage != null -> {
-                    Text(
-                        text = errorMessage ?: "",
-                        color = Color.Red,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        items(factures) { facture ->
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp),
-                                colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text("N° Facture : ${facture.numeroFacture}", style = MaterialTheme.typography.titleMedium)
-                                    Text("Client : ${facture.clientNom} (ID: ${facture.clientId})")
-                                    Text("Date de création : ${facture.dateCreation}")
-                                    Text("Montant total : ${facture.montantTotal} MAD")
-                                    Text("Statut : ${facture.statut}")
-                                    Text("Nombre d'items : ${facture.items.size}")
-                                }
-                            }
+            items(factures) { facture ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Facture n°${facture.id}", style = MaterialTheme.typography.titleMedium)
+                        Text("Fournisseur : ${facture.nomFournisseur}")
+                        Text("Date : ${facture.date}")
+                        Text("Montant HT : ${facture.montantHT} MAD")
+                        Text("Montant TTC : ${facture.montantTTC} MAD")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Détail des lignes :", style = MaterialTheme.typography.titleSmall)
+                        facture.lignes.forEach { ligne ->
+                            Text("• ${ligne.designation} (${ligne.reference})")
+                            Text("   Qté: ${ligne.quantite}, PU: ${ligne.prixUnitaire}, Total: ${ligne.totalLigne}")
                         }
                     }
                 }

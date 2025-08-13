@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(navController: NavHostController, username: String = "Utilisateur") {
+fun DashboardScreen(navController: NavHostController, username: String = "youssef") {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -47,7 +47,7 @@ fun DashboardScreen(navController: NavHostController, username: String = "Utilis
                 // ✅ Avatar de l'utilisateur
                 Image(
                     painter = painterResource(id = R.drawable.img),
-                    contentDescription = "Avatar utilisateur",
+                    contentDescription = "Avatar youssef",
                     modifier = Modifier
                         .size(100.dp)
                         .clip(CircleShape)
@@ -67,17 +67,17 @@ fun DashboardScreen(navController: NavHostController, username: String = "Utilis
                 Spacer(modifier = Modifier.height(32.dp))
 
                 // ✅ Menu items
-                DrawerMenuItem(icon = Icons.Default.AccountCircle, label = "Profile") {
+                DrawerMenuItem(icon = Icons.Default.AccountCircle, label = "Profil") {
                     scope.launch { drawerState.close() }
                     navController.navigate("profile")
                 }
 
-                DrawerMenuItem(icon = Icons.Default.Info, label = "About Us") {
+                DrawerMenuItem(icon = Icons.Default.Info, label = "À propos de nous") {
                     scope.launch { drawerState.close() }
                     navController.navigate("about")
                 }
 
-                DrawerMenuItem(icon = Icons.Default.ExitToApp, label = "Logout") {
+                DrawerMenuItem(icon = Icons.Default.ExitToApp, label = "déconnexion") {
                     scope.launch { drawerState.close() }
                     navController.navigate("login") {
                         popUpTo("dashboard") { inclusive = true }
@@ -153,7 +153,7 @@ fun DashboardScreen(navController: NavHostController, username: String = "Utilis
 
                 // ✅ Titre "Dashboard" centré verticalement
                 Text(
-                    text = "Dashboard",
+                    text = "",
                     color = Color.White,
                     style = MaterialTheme.typography.displayMedium,
                     textAlign = TextAlign.Center,
@@ -167,15 +167,15 @@ fun DashboardScreen(navController: NavHostController, username: String = "Utilis
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    DashboardTile("Liste des traitements") {
+                    DashboardTile("Liste des Traitements") {
                         navController.navigate("page1")
                     }
 
-                    DashboardTile("List des Articles") {
+                    DashboardTile("Liste des Articles") {
                         navController.navigate("page2")
                     }
 
-                    DashboardTile("Facture") {
+                    DashboardTile("Factures") {
                         navController.navigate("page3")
                     }
                 }
